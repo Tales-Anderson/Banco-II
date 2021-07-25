@@ -1,18 +1,20 @@
+
 import java.sql.*;
 import java.util.Scanner;
+
+
 
 public class App {
 
     public static void main(String[] args) throws SQLException {
 
+//Aba de declaração de variáveis usadas no programa//
         Usuario usuario= new Usuario();
         RascunhoCache rascunhoCache= new RascunhoCache();
-        
-        
-//Aba de declaração de variáveis usadas no programa//
-
         ConFactory conFactory = new ConFactory();
         Connection conn= null;
+        MongoConnection mongoConnection= new MongoConnection();
+        SQL sql= new SQL();
         int n;
         String nome;
         String email;
@@ -38,24 +40,24 @@ public class App {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-
-        //Trecho de crud, onde o usuario pode se cadastrar ou recuperar rascunho//
-
-        st= conn.createStatement();
-
+        //Trecho de crud, onde o usuario pode se cadastrar, recuperar rascunho e fazer postagens//
 
         do {
            System.out.println("----------Menu------------");
            System.out.println("Digite 1 para se cadastrar: ");
            System.out.println("Digite 2 se ja possui cadastro e desejar ver seu rascunho salvo:");
+           System.out.println("Digite 3 para realizar uma postagem: ");
+           System.out.println("Digite 4 para ver suas postagens: ");
            System.out.println("Digite 0 se desejar encerrar");
 
            n= sc.nextInt();
            sc.nextLine();
            String emailAux;
            String aux2 = null;
+           String titulo;
+           String texto;
 
-           switch (n){
+         switch (n){
 
                //o usuario insere seus dados, que são adicionados aos bancos//
 
@@ -67,26 +69,16 @@ public class App {
                    System.out.println("Informe seu email: ");
                    email= sc.nextLine();
                    usuario.setEmail(email);
-                   
-                   System.out.println("Digite sua publicação");
+
+                   System.out.println("Digite seu rascunho a ser salvo");
                    rasc= sc.nextLine();
 
 
-                        ps= conn.prepareStatement(
-                            "INSERT INTO usuarios"
-                             + "(nome, email)"
-                             + "VALUES"
-                             + "(?, ?)");
+                        sql.AdicionaSQL(conn, usuario);
 
-                        ps.setString(1, usuario.getNome());
-                        ps.setString(2, usuario.getEmail());
-
-                       Rascunho rascunho= new Rascunho(usuario.getEmail());
-                       rascunho.AdicionarRascunho(rasc);
-                       rascunhoCache.AdicionaRascunhoCache(rascunho);
-                        
-
-                        ps.executeUpdate();
+                        Rascunho rascunho= new Rascunho(usuario.getEmail());
+                        rascunho.AdicionarRascunho(rasc);
+                        rascunhoCache.AdicionaRascunhoCache(rascunho);
 
                         System.out.println("Conta criada com sucesso");
                    break;
@@ -99,12 +91,33 @@ public class App {
                  Rascunho rascunhoResult= rascunhoCache.buscaRascunho(emailBusca);
                  System.out.println(rascunhoResult);
                    break;
-           }
 
+             case 3:
+                 System.out.println("Informe seu email: ");
+                 email= sc.nextLine();
+
+                 System.out.println("Carregando...");
+
+                 System.out.println("Digite o titulo da sua postagem: ");
+                 titulo= sc.nextLine();
+                 System.out.println("Escreva usa postagem");
+                 texto= sc.nextLine();
+
+                 Postagem postagem= new Postagem(titulo, texto, email);
+                 mongoConnection.AdicionaPostagem(postagem);
+
+                 break;
+
+             case 4:
+                 System.out.println("Informe seu email: ");
+                 email= sc.nextLine();
+                 mongoConnection.BuscaPostagem(email);
+                 break;
+               }
 
        }while (n!=0);
 
-
+        mongoConnection.Encerra();
     }
 
 }
