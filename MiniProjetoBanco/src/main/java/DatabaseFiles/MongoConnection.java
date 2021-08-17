@@ -1,3 +1,6 @@
+package DatabaseFiles;
+
+import Model.Postagem;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.client.MongoCollection;
@@ -26,17 +29,17 @@ public class MongoConnection {
 
     MongoCollection<Postagem> collection= database.getCollection("Usuario", Postagem.class);
 
-    public void AdicionaPostagem(Postagem postagem){
+    public void adicionaPostagem(Postagem postagem){
         collection.insertOne(postagem);
     }
 
-    public void BuscaPostagem(String email){
+    public void buscaPostagem(String email){
         collection.find(Filters.eq("email", email))
                 .forEach((Consumer<Postagem>) postagem ->System.out.println(postagem));
 
     }
 
-    public void Encerra(){
+    public void encerra(){
         mongoClient.close();
     }
 }

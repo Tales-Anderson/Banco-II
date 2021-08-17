@@ -1,3 +1,5 @@
+package Model;
+
 public class Rascunho {
 
 
@@ -16,7 +18,7 @@ public class Rascunho {
         this.texto = texto;
     }
 
-    public String AdicionarRascunho(String texto){
+    public String adicionarRascunho(String texto){
         return this.texto= texto;
     }
 

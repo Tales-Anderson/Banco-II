@@ -1,4 +1,7 @@
+package View;
 
+import Model.*;
+import DatabaseFiles.*;
 import java.sql.*;
 import java.util.Scanner;
 
@@ -15,6 +18,7 @@ public class App {
         Connection conn= null;
         MongoConnection mongoConnection= new MongoConnection();
         SQL sql= new SQL();
+        RedeSocial redeSocial= new RedeSocial();
         int n;
         String nome;
         String email;
@@ -23,6 +27,7 @@ public class App {
         Scanner sc= new Scanner(System.in);
         Statement st= null;
         PreparedStatement ps= null;
+
 
 //Trecho de conexão ao PostgreSql//
 
@@ -48,12 +53,16 @@ public class App {
            System.out.println("Digite 2 se ja possui cadastro e desejar ver seu rascunho salvo:");
            System.out.println("Digite 3 para realizar uma postagem: ");
            System.out.println("Digite 4 para ver suas postagens: ");
+           System.out.println("Digite 5 para seguir alguem: ");
+           System.out.println("Digite 6 para ver amigos sugeridos: ");
            System.out.println("Digite 0 se desejar encerrar");
 
            n= sc.nextInt();
            sc.nextLine();
            String emailAux;
            String aux2 = null;
+           String email1;
+           String email2;
            String titulo;
            String texto;
 
@@ -70,15 +79,17 @@ public class App {
                    email= sc.nextLine();
                    usuario.setEmail(email);
 
-                   System.out.println("Digite seu rascunho a ser salvo");
-                   rasc= sc.nextLine();
+                  // System.out.println("Digite seu rascunho a ser salvo");
+                  // rasc= sc.nextLine();
 
 
-                        sql.AdicionaSQL(conn, usuario);
+                        sql.adicionaSQL(conn, usuario);
 
-                        Rascunho rascunho= new Rascunho(usuario.getEmail());
-                        rascunho.AdicionarRascunho(rasc);
-                        rascunhoCache.AdicionaRascunhoCache(rascunho);
+                        redeSocial.adicionaUsuario(usuario);
+
+                       // Rascunho rascunho= new Rascunho(usuario.getEmail());
+                        //rascunho.adicionarRascunho(rasc);
+                        //rascunhoCache.adicionaRascunhoCache(rascunho);
 
                         System.out.println("Conta criada com sucesso");
                    break;
@@ -104,20 +115,34 @@ public class App {
                  texto= sc.nextLine();
 
                  Postagem postagem= new Postagem(titulo, texto, email);
-                 mongoConnection.AdicionaPostagem(postagem);
+                 mongoConnection.adicionaPostagem(postagem);
 
                  break;
 
              case 4:
                  System.out.println("Informe seu email: ");
                  email= sc.nextLine();
-                 mongoConnection.BuscaPostagem(email);
+                 mongoConnection.buscaPostagem(email);
+                 break;
+             case 5:
+                 System.out.println("Informe seu email: ");
+                 email1= sc.nextLine();
+                 System.out.println("Informe o email de quem deseja seguir: ");
+                 email2= sc.nextLine();
+                 redeSocial.fazerAmizade(email1, email2);
+                 break;
+             case 6:
+                 System.out.println("Informe seu email: ");
+                 email1= sc.nextLine();
+                 redeSocial.amigosSugeridos(email1);
                  break;
                }
 
        }while (n!=0);
 
-        mongoConnection.Encerra();
+        mongoConnection.encerra();
+        redeSocial.fechaConexao();
+
     }
 
 }

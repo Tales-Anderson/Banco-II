@@ -1,3 +1,5 @@
+package Model;
+
 public class Postagem {
     private String titulo;
     private String texto;

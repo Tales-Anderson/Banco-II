@@ -1,3 +1,5 @@
+package Model;
+
 public class Usuario {
 
     private String nome;
@@ -12,6 +14,7 @@ public class Usuario {
     }
 
     public String getNome() {
+        
         return nome;
     }
 

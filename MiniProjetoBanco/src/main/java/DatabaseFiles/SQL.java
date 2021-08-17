@@ -1,3 +1,7 @@
+package DatabaseFiles;
+
+import Model.Usuario;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -6,7 +10,7 @@ public class SQL {
     public SQL() {
     }
 
-    public void AdicionaSQL(Connection conn, Usuario usuario) throws SQLException {
+    public void adicionaSQL(Connection conn, Usuario usuario) throws SQLException {
         PreparedStatement ps= null;
         ps= conn.prepareStatement(
                 "INSERT INTO usuarios"
